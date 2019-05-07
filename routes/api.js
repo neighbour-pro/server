@@ -15,35 +15,109 @@ router.post("/login", passport.authenticate("local", {
 }));
 
 router.post("/signup", (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  if (username === "" || password === "") {
-    res.render("auth/signup", { message: "Indicate username and password" });
+  const {name, email, password, confirmPassword, type, phone} = req.body;
+
+  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(type) || phone.trim().length === 0){
+    res.status(400).json({
+      message: 'There are errors on the form',
+    });
     return;
   }
 
-  User.findOne({ username }, "username", (err, user) => {
-    if (user !== null) {
-      res.render("auth/signup", { message: "The username already exists" });
-      return;
-    }
+  switch(type){
+    case 'Client':
+      Client.findOne({email})
+        .then(client => {
+          if(client){
+            res.status(400).json({
+              message: 'Email currently in use'
+            });
+            return;
+          }
 
-    const salt = bcrypt.genSaltSync(bcryptSalt);
-    const hashPass = bcrypt.hashSync(password, salt);
+          const salt = bcrypt.genSaltSync(10);
+          const hashPass = bcrypt.hashSync(password, salt);
 
-    const newUser = new User({
-      username,
-      password: hashPass
-    });
+          const newClient = new Client({
+            email,
+            password: hashPass,
+            name,
+            phone
+          });
+          newClient.save(err => {
+            if(err){
+              res.status(400).json({
+                message: 'Client not saved',
+              });
+              return;
+            }
 
-    newUser.save()
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch(err => {
-      res.render("auth/signup", { message: "Something went wrong" });
-    })
-  });
+            req.login(newClient, (err) => {
+              res.status(500).json({
+                message: 'The login after signup went bad',
+              });
+              return;
+            });
+
+            res.status(200).json(client: newClient);
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            error: err
+          });
+          return;
+        });
+    break;
+    case 'Professional':
+      Professional.findOne({email})
+        .then(professional => {
+          if(professional){
+            res.status(400).json({
+              message: 'Email currently in use'
+            });
+            return;
+          }
+
+          const salt = bcrypt.genSaltSync(10);
+          const hashPass = bcrypt.hashSync(password, salt);
+
+          const newProfessional = new Professional({
+            email,
+            password: hashPass,
+            name,
+            phone
+          });
+          newProfessional.save(err => {
+            if(err){
+              res.status(400).json({
+                message: 'Professional not saved',
+              });
+              return;
+            }
+
+            req.login(newProfessional, (err) => {
+              res.status(500).json({
+                message: 'The login after signup went bad',
+              });
+              return;
+            });
+
+            res.status(200).json(professional: newProfessional);
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            error: err
+          });
+          return;
+        });
+    break;
+    default:
+      res.status(500).json({
+        message: 'There have been an error on the server'
+      });
+  }
 });
 
 router.get("/logout", (req, res) => {
