@@ -12,7 +12,8 @@ router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, failureDetails) => {
     if(err){
       res.status(500).json({
-        message: 'Authentication error',
+        message: 'Authentication error!',
+        error: failureDetails
       });
       return;
     }
