@@ -11,8 +11,11 @@ const clientSchema = new Schema({
     type: String,
     required: true
   },
-  phone: String,
-  ratings: [Schema.Types.ObjectId],
+  phone: {
+    type: String,
+    unique: true,
+  },
+  ratings: [{type: Schema.Types.ObjectId, ref: 'Rating'}],
   password: String
 }, {
   timestamps: {

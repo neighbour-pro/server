@@ -2,22 +2,45 @@ const express = require("express");
 const passport = require('passport');
 const router = express.Router();
 const Client = require("../models/Client");
+const Client = require("../models/Professional");
 
 // Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
-router.post("/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/auth/login",
-  failureFlash: true,
-  passReqToCallback: true
-}));
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, failureDetails) => {
+    if(err){
+      res.status(500).json({
+        message: 'Authentication error',
+      });
+      return;
+    }
+
+    if(!user){
+      res.status(401).json({
+        error: failureDetails
+      });
+      return;
+    }
+
+    req.login(user, (err) => {
+      if(err){
+        res.status(500).json({
+          message: 'Error on the session',
+        });
+        return;
+      }
+
+      res.status(200).json(user);
+    });
+  })(req, res, next);
+});
 
 router.post("/signup", (req, res, next) => {
-  const {name, email, password, confirmPassword, type, phone} = req.body;
+  const {name, email, password, confirmPassword, type} = req.body;
 
-  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(type) || phone.trim().length === 0){
+  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(type)){
     res.status(400).json({
       message: 'There are errors on the form',
     });
@@ -42,7 +65,6 @@ router.post("/signup", (req, res, next) => {
             email,
             password: hashPass,
             name,
-            phone
           });
           newClient.save(err => {
             if(err){
@@ -86,7 +108,6 @@ router.post("/signup", (req, res, next) => {
             email,
             password: hashPass,
             name,
-            phone
           });
           newProfessional.save(err => {
             if(err){
