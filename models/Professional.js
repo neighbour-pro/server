@@ -15,8 +15,7 @@ const professionalSchema = new Schema({
     type: String,
     unique: true,
   },
-  password: String
-},
+  password: String,
   location: {
     type: {
       type: String,

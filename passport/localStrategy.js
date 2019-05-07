@@ -1,6 +1,7 @@
 const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Client          = require('../models/Client');
+const Professional          = require('../models/Professional');
 const bcrypt        = require('bcrypt');
 
 passport.use(new LocalStrategy({
@@ -8,20 +9,27 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
   }, 
   (email, password, done) => {
-    Client.findOne({ email })
-    .then(foundClient => {
-      if (!foundClient) {
-        done(null, false, { message: 'Incorrect email' });
-        return;
-      }
 
-      if (!bcrypt.compareSync(password, foundClient.password)) {
-        done(null, false, { message: 'Incorrect password' });
-        return;
-      }
-
-      done(null, foundClient);
-    })
-    .catch(err => done(err));
+    Client.findOne({email})
+      .then(client => {
+        if(client){
+          if(!bcrypt.compareSync(password, client.password)){
+            done(null, false, {message: 'Incorrect password'});
+            return;
+          }
+          done(null, client);
+        }else{
+          Professional.findOne({email})
+            .then(professional => {
+              if(!bcrypt.compareSync(password, client.password)){
+              done(null, false, {message: 'Incorrect password'});
+              return;
+            }
+            done(null, client);
+            })
+            .catch(err => done(err));
+        }
+      })
+      .catch(err => done(err));
   }
 ));
