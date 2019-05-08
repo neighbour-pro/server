@@ -40,9 +40,7 @@ app.use(session({
 }))
 require('./passport')(app);
 
-const api = require('./routes/api');
-app.use('/api', api);
-const professional = require('./routes/professional');
-app.use('/professional', professional);
+const auth = require('./routes/auth');
+app.use('/auth', auth);
       
 module.exports = app;

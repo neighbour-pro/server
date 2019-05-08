@@ -1,7 +1,6 @@
 const passport      = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const Client          = require('../models/Client');
-const Professional          = require('../models/Professional');
+const User          = require('../models/User');
 const bcrypt        = require('bcrypt');
 
 passport.use(new LocalStrategy({
@@ -10,31 +9,31 @@ passport.use(new LocalStrategy({
   }, 
   (email, password, done) => {
 
-    const client = Client.findOne({email});
-    const professional = Professional.findOne({email});
+    // const client = Client.findOne({email});
+    // const professional = Professional.findOne({email});
     
-    Promise.all([client, professional])
-      .then((values) => {
-        if(values[0]){
-          if(!bcrypt.compareSync(password, values[0].password)){
-            done(null, false, {message: 'Incorrect password'});
-            return;
-          }
-          done(null, values[0]);
-          return;
-        }
+    // Promise.all([client, professional])
+    //   .then((values) => {
+    //     if(values[0]){
+    //       if(!bcrypt.compareSync(password, values[0].password)){
+    //         done(null, false, {message: 'Incorrect password'});
+    //         return;
+    //       }
+    //       done(null, values[0]);
+    //       return;
+    //     }
 
-        if(values[1]){
-          if(!bcrypt.compareSync(password, values[1].password)){
-            done(null, false, {message: 'Incorrect password'});
-            return;
-          }
-          done(null, values[1]);
-          return;
-        }
+    //     if(values[1]){
+    //       if(!bcrypt.compareSync(password, values[1].password)){
+    //         done(null, false, {message: 'Incorrect password'});
+    //         return;
+    //       }
+    //       done(null, values[1]);
+    //       return;
+    //     }
 
-        done(null, false, {message: 'User not found'})
-      })
-      .catch(err => done(err));
+    //     done(null, false, {message: 'User not found'})
+    //   })
+    //   .catch(err => done(err));
   }
 ));
