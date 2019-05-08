@@ -42,5 +42,7 @@ require('./passport')(app);
 
 const auth = require('./routes/auth');
 app.use('/api/auth', auth);
+const user = require('./routes/user');
+app.use('/api/user', user);
       
 module.exports = app;
