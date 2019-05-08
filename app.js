@@ -42,5 +42,7 @@ require('./passport')(app);
 
 const api = require('./routes/api');
 app.use('/api', api);
+const professional = require('./routes/professional');
+app.use('/professional', professional);
       
 module.exports = app;
