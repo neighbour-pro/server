@@ -8,32 +8,18 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
   }, 
   (email, password, done) => {
-
-    // const client = Client.findOne({email});
-    // const professional = Professional.findOne({email});
-    
-    // Promise.all([client, professional])
-    //   .then((values) => {
-    //     if(values[0]){
-    //       if(!bcrypt.compareSync(password, values[0].password)){
-    //         done(null, false, {message: 'Incorrect password'});
-    //         return;
-    //       }
-    //       done(null, values[0]);
-    //       return;
-    //     }
-
-    //     if(values[1]){
-    //       if(!bcrypt.compareSync(password, values[1].password)){
-    //         done(null, false, {message: 'Incorrect password'});
-    //         return;
-    //       }
-    //       done(null, values[1]);
-    //       return;
-    //     }
-
-    //     done(null, false, {message: 'User not found'})
-    //   })
-    //   .catch(err => done(err));
+    User.findOne({email})
+      .then(user => {
+        if(user){
+          if(!bcrypt.compareSync(password, user.password)){
+            done(null, false, {message: 'Incorrect Password'});
+            return;
+          }
+          done(null, user);
+          return;
+        }
+        done(null, false, {message: 'User not found'});
+      })
+      .catch(err => done(err));
   }
 ));

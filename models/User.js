@@ -6,21 +6,26 @@ module.exports = mongoose.model('User', new Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   email: {
     type: String,
     unique: true,
+    trim: true
   },
-  image_id: {
-    type: Schema.Types.ObjectId,
-    ref: 'Image',
-    default: '',
+  password: {
+    type: String,
+    required: true
   },
-  lastSeen: Date,
+  lastSeen: {
+    type: Date,
+    default: Date.now
+  },
   phone: {
     type: String,
     unique: true,
     sparse: true,
+    trim: true
   },
   location: {
     type: {
@@ -30,6 +35,10 @@ module.exports = mongoose.model('User', new Schema({
     coordinates: {
       type: [Number],
     }
+  },
+  imageId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Image',
   },
   description: String,
   services: String,

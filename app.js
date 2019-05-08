@@ -41,6 +41,6 @@ app.use(session({
 require('./passport')(app);
 
 const auth = require('./routes/auth');
-app.use('/auth', auth);
+app.use('/api/auth', auth);
       
 module.exports = app;

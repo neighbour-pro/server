@@ -8,6 +8,7 @@ passport.serializeUser((loggedInUser, cb) => {
 passport.deserializeUser((userIdFromSession, cb) => {
   User.findById(userIdFromSession)
   .then(userDocument => {
+    userDocument.lastSeen = Date.now();
     cb(null, userDocument);
   })
   .catch(err => {

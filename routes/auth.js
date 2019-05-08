@@ -1,8 +1,8 @@
 const express = require("express");
 const passport = require('passport');
 const router = express.Router();
+const User = require('../models/User');
 
-// Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
@@ -37,113 +37,62 @@ router.post('/login', (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  const {name, email, password, confirmPassword, type} = req.body;
-  let salt, hashPass, error = false;
+  const {name, email, password, confirmPassword, role} = req.body;
+  let salt, hashPass;
 
-  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(type)){
+  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(role)){
     res.status(400).json({
-      message: 'There are errors on the form',
+      code: 400,
+      message: 'There are errors on the form'
     });
     return;
   }
 
-  Client.findOne({email})
-    .then(client => {
-      if(client){
-        error = true;
-        res.status(400).json({
-          message: 'Email currently in use'
-        });
-        return;
-      }
-      return Promise.resolve();
+  User.findOne({email})
+  .then(user => {
+    if(user){
+      res.status(400).json({
+        code: 400,
+        message: 'Email currently in use',
+      });
+      return;
+    }
+
+    salt = bcrypt.genSaltSync(bcryptSalt);
+    hashPass = bcrypt.hashSync(password, salt);
+
+    User.create({
+      email,
+      name,
+      password: hashPass,
+      role,
+      lastSeen: Date.now()
     })
-    .then(()=> Professional.findOne({email}))
-    .then(professional => {
-      if(professional){
-        error = true;
-        res.status(400).json({
-          message: 'Email currently in use'
-        });
-        return;
-      }
-      return Promise.resolve();
-    })
-    .then(()=>{
-      if(!error){
-        switch(type){
-        case 'Client':
-          salt = bcrypt.genSaltSync(10);
-          hashPass = bcrypt.hashSync(password, salt);
-
-          const newClient = new Client({
-            email,
-            password: hashPass,
-            name,
-          });
-
-          newClient.save()
-            .then(client => {
-              req.login(newClient, (err) => {
-                if(err){
-                  res.status(500).json({
-                    message: 'The login after signup went bad',
-                  });
-                  return;
-                }
-                res.status(200).json({client: newClient});
-              });
-            })
-            .catch(err => {
-              res.status(400).json({
-                message: 'Client not saved',
-                error: err
-              });
-            });
-        break;
-        case 'Professional':
-          salt = bcrypt.genSaltSync(10);
-          hashPass = bcrypt.hashSync(password, salt);
-
-          const newProfessional = new Professional({
-            email,
-            password: hashPass,
-            name,
-          });
-          newProfessional.save()
-            .then(professional => {
-              req.login(newProfessional, (err) => {
-                if(err){
-                  res.status(500).json({
-                    message: 'The login after signup went bad',
-                  });
-                  return;
-                }
-                res.status(200).json({professional: newProfessional});
-              });
-            })
-            .catch(err => {
-              if(err){
-                res.status(400).json({
-                  message: 'Professional not saved',
-                });
-                return;
-              }
-            });
-        break;
-        default:
+    .then(user => {
+      req.login(user, err => {
+        if(err){
           res.status(500).json({
-            message: 'The account type is not valid'
+            code: 500,
+            message: 'Error in login after signup',
+            error: err
           });
-        break;
+          return;
         }
-      }
+        res.status(200).json({
+          code: 200,
+          user
+        });
+      });
     })
     .catch(err => {
       res.status(500).json({
-        message: err
+        code: 500,
+        message: 'User not saved',
+        error: err
       });
+      return;
     });
+  });
 });
 
 router.get("/logout", (req, res) => {
