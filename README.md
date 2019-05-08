@@ -5,6 +5,9 @@ DB=your url connection to db
 ENV=development`
 2. Run `npm run dev`
 
+## Seed database
+To add fake users to the database, run the next command: `node seeds/user.seed.js`.
+
 ## API docs
 
 ### Authentication
