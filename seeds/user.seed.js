@@ -70,7 +70,7 @@ const professionals = new Array(80).fill(0).map(user => {
       fromUserId: user._id,
       stars: reviewsStarsOptions[Math.floor(Math.random()*reviewsStarsOptions.length)],
       comment: faker.lorem.words(getRandomIntMinMax(15, 130))
-  }))))
+  }).save())))
   .then(reviews => Promise.all(reviews))
   .then(resolvedReviews => {
     let {lat, lng} = getRandomCoord(40.504718, -3.697439, 20000);

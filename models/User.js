@@ -35,7 +35,7 @@ const userSchema = new Schema({
     },
     coordinates: {
       type: [Number],
-      default: [-129.354104, -18.551005], // If not, near queries won't work! This coordinates are from the South Pacific
+      default: [-129.354104, -18.551005],
       required: true,
     },
   },
@@ -53,5 +53,7 @@ const userSchema = new Schema({
 }, {
   timestamps: true,
 });
+
+userSchema.index({location:'2dsphere'});
 
 module.exports = mongoose.model('User', userSchema);

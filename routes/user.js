@@ -19,6 +19,7 @@ router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
       }
     }
   })
+  // .populate('reviews')
   .then(users => {
     res.status(200).json({
       users
