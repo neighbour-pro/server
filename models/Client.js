@@ -13,7 +13,10 @@ const clientSchema = new Schema({
   },
   phone: {
     type: String,
-    unique: true,
+  },
+  image: {
+    type:String,
+    default: ''
   },
   ratings: [{type: Schema.Types.ObjectId, ref: 'Rating'}],
   password: String

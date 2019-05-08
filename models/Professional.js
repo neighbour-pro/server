@@ -13,9 +13,12 @@ const professionalSchema = new Schema({
   },
   phone: {
     type: String,
-    unique: true,
   },
   password: String,
+  image: {
+    type: String,
+    default: ''
+  },
   location: {
     type: {
       type: String,

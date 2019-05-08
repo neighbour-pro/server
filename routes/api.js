@@ -99,6 +99,7 @@ router.post("/signup", (req, res, next) => {
             .catch(err => {
               res.status(400).json({
                 message: 'Client not saved',
+                error: err
               });
             });
         break;
