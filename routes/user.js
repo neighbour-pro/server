@@ -53,4 +53,24 @@ router.get('/:id', (req, res, next) => {
     }));
 });
 
+router.delete('/:id/delete', (req, res, next) => {
+  User.deleteOne({_id: req.params.id})
+    .then(user => {
+      if(!user){
+        res.status(404).json({
+          message: 'User not found',
+        });
+        return;
+      }
+      res.status(200).json({
+        message: 'User deleted successfully',
+      });
+      return;
+    })
+    .catch(err => res.status(500).json({
+      message: 'Error removing the specified user',
+      error: err
+    }));
+})
+
 module.exports = router;
