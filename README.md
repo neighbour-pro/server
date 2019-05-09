@@ -25,3 +25,9 @@ Logout route: `/api/auth/logout`.
 Method: GET.
 Description: It lets a user to log out.
 Required fields: none.
+
+## Users
+Near professionals route `/api/user/nearme/:longitude/:latitude/:radius?`
+Method: GET
+Description: Get the nearest professionals within a radius parameter (optional, default to 100km) at a longitude and latitude center.
+Required parameters: longitude, latitude
