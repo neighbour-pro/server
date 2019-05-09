@@ -23,10 +23,37 @@ router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
       }
     }
   })
-  .populate({path:'reviews', populate: {path:'fromUserId', model:'User'}})
+  .select({
+    email:0,
+    password:0,
+    lastSeen: 0,
+    description: 0,
+    services: 0,
+    role: 0,
+    phone: 0,
+    createdAt: 0,
+    updatedAt: 0,
+    __v: 0,
+    'location.type': 0,
+    'reviews.images': 0,
+  })
+  .populate({path: 'reviews', select: 'stars -_id'})
   .then(users => {
+    let response = users.map(user => {
+      return {
+        professional_id: user._id,
+        name: user.name,
+        image: user.userPhoto,
+        avg_rate: user.reviews.reduce((acc, post) => acc + parseInt(post.stars),0) / user.reviews.length,
+        location: {
+          lng: user.location.coordinates[0],
+          lat: user.location.coordinates[1]
+        },
+      };
+    });
+
     res.status(200).json({
-      users
+      users: response
     });
     return;
   })
