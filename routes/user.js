@@ -32,4 +32,25 @@ router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
   }));
 });
 
+router.get('/:id', (req, res, next) => {
+  User.findById(req.params.id)
+    .populate({path: 'reviews', populate: {path: 'fromUserId', model: 'User'}})
+    .then(user => {
+      if(!user){
+        res.status(404).json({
+          message: 'User not found',
+        });
+        return;
+      }
+      res.status(200).json({
+        user
+      });
+      return;
+    })
+    .catch(err => res.status(500).json({
+      message: 'Error getting the specified user',
+      error: err
+    }));
+});
+
 module.exports = router;
