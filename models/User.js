@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+<<<<<<< HEAD
 const userSchema = new Schema({
+=======
+
+module.exports = mongoose.model('User', new Schema({
+>>>>>>> a7c196bec3becb811d127f3e8460b512868cec12
   name: {
     type: String,
     required: true,
