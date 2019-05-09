@@ -5,6 +5,9 @@ DB=your url connection to db
 ENV=development`
 2. Run `npm run dev`
 
+## Seed database
+To add fake users to the database, run the next command: `node seeds/user.seed.js`.
+
 ## API docs
 
 ### Authentication
@@ -22,3 +25,24 @@ Logout route: `/api/auth/logout`.
 Method: GET.
 Description: It lets a user to log out.
 Required fields: none.
+
+## Users
+Near professionals route `/api/user/nearme/:longitude/:latitude/:radius?`
+Method: GET
+Description: Gets the nearest professionals within a radius parameter (optional, default to 100km) at a longitude and latitude center.
+Required parameters: longitude, latitude
+
+Get user by id route: `/api/user/:id`
+Method: GET
+Description: Gets the user which id is the same passed by params
+Required parameters: id.
+
+Update user route: `/api/user/:id/update`
+Method: PUT
+Description: Updates the user information
+If the user is a client, the required fields are: `name, email, password, phone, role`
+If the user is a professional, the required fields are: `name, email, password, phone, description, services, role, location.coordinates.0, location.coordinates.1`
+
+Delete user route: `/api/user/:id/delete`
+Method: DELETE
+Description: It Deletes the user

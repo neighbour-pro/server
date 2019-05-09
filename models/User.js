@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-
-module.exports = mongoose.model('User', new Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -31,10 +30,14 @@ module.exports = mongoose.model('User', new Schema({
     type: {
       type: String,
       enum: ['Point'],
+      default: 'Point',
+      required: true
     },
     coordinates: {
       type: [Number],
-    }
+      default: [-129.354104, -18.551005],
+      required: true,
+    },
   },
   imageId: {
     type: Schema.Types.ObjectId,
@@ -49,4 +52,8 @@ module.exports = mongoose.model('User', new Schema({
   }
 }, {
   timestamps: true,
-}));
+});
+
+userSchema.index({location:'2dsphere'});
+
+module.exports = mongoose.model('User', userSchema);

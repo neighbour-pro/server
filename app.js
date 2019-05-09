@@ -9,7 +9,10 @@ const path         = require('path');
 
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
-    
+
+require('./models/User');
+require('./models/Review');
+require('./models/Image');
 
 mongoose
   .connect(process.env.DB, {useNewUrlParser: true})
@@ -42,5 +45,7 @@ require('./passport')(app);
 
 const auth = require('./routes/auth');
 app.use('/api/auth', auth);
+const user = require('./routes/user');
+app.use('/api/user', user);
       
 module.exports = app;

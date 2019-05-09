@@ -40,7 +40,12 @@ router.post("/signup", (req, res, next) => {
   const {name, email, password, confirmPassword, role} = req.body;
   let salt, hashPass;
 
-  if(email.trim().length === 0 || password.length === 0 || name.trim().length === 0 || confirmPassword.length === 0 || password !== confirmPassword || !['Client', 'Professional'].includes(role)){
+  if(email.trim().length === 0 
+  || password.length === 0 
+  || name.trim().length === 0 
+  || confirmPassword.length === 0 
+  || password !== confirmPassword 
+  || !['Client', 'Professional'].includes(role)){
     res.status(400).json({
       code: 400,
       message: 'There are errors on the form'
