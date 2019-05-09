@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/User');
 const Image = require('../models/Image');
+const Review = require('../models/Review');
 const bcrypt = require('bcrypt');
 const uploadCloud = require('../config/cloudinary.js');
 
@@ -152,6 +153,30 @@ router.delete('/:id/delete', (req, res, next) => {
       message: 'Error removing the specified user',
       error: err
     }));
+});
+
+router.post('/:proId/:clientId/review', (req, res, next) => {
+  const {stars, comment} = req.body;
+  const review = new Review({
+    fromUserId: req.params.clientId,
+    stars,
+    comment
+  });
+  review.save()
+    .then(review => User.findByIdAndUpdate(req.params.proId, {
+      $push: {
+        reviews: review
+      }
+    }, {new: true}))
+    .then(user => res.status(200).json({
+      message: 'Review created successfully',
+      user
+    }))
+    .catch(err => res.status(500).json({
+      message: 'There was an error creating the review',
+      error: err
+    }));
+
 });
 
 module.exports = router;
