@@ -109,6 +109,55 @@ router.get('/professional/:id', (req, res, next) => {
     }));
 });
 
+router.get('/professional/:id/reviews', (req, res, next) => {
+  User.findById(req.params.id)
+    .select({
+      location: 0,
+      userPhoto: 0,
+      email:0,
+      password: 0,
+      lastSeen: 0,
+      description: 0,
+      services: 0,
+      role: 0,
+      phone: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0
+    })
+    .populate({
+      path: 'reviews',
+      select: 'images stars comment createdAt',
+      populate: {
+        path: 'fromUserId',
+        select: 'name userPhoto'
+      }
+    })
+    .then(user => {
+      if(!user){
+        res.status(404).json({
+          message: 'User not found',
+        });
+        return;
+      }
+
+      const response = {
+        _id: user._id,
+        name: user.name,
+        reviews: user.reviews
+      };
+
+      res.status(200).json({
+        user: response
+      });
+      return;
+    })
+    .catch(err => res.status(500).json({
+      message: 'Error getting the specified user',
+      error: err
+    }));
+});
+
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .populate({path: 'reviews', populate: {path: 'fromUserId', model: 'User'}})

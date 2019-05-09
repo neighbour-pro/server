@@ -37,6 +37,16 @@ Method: GET
 Description: Gets the user which id is the same passed by params
 Required parameters: id.
 
+User's profile route: `/api/user/professional/:id`
+Method: GET,
+Description: Get the necessary fields to see the user's profile,
+Required parameters: id
+
+Professional's reviews route: `/api/user/professional/:id/reviews`
+Method: GET,
+Description: Get the necessary fields to see the professional's reviews
+Required parameters: id
+
 Update user's profile image route: `/api/user/image/:id`
 Method: PUT
 Description: Updates the user's profile image and returns the updated user
