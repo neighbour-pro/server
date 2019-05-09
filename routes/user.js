@@ -56,6 +56,24 @@ router.get('/:id', (req, res, next) => {
     }));
 });
 
+router.put('/:id/image', uploadCloud.single('profileImage'), (req, res, next) => {
+  let userPhoto = req.file.url;
+  User.findByIdAndUpdate(req.params.id, {
+    userPhoto
+  }, { new: true })
+    .then(user => {
+      res.status(200).json({
+        message: 'User updated sucessfully',
+        user
+      });
+      return;
+    })
+    .catch(err => res.status(500).json({
+      message: 'An error happened when uploading the image',
+      error: err
+    }));
+})
+
 router.put('/:id/update', uploadCloud.single('image'), (req, res, next) => {
   User.findById(req.params.id)
     .then(user => {
