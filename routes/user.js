@@ -63,6 +63,52 @@ router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
   }));
 });
 
+router.get('/professional/:id', (req, res, next) => {
+  User.findById(req.params.id)
+    .select({
+      'location.type':0,
+      email:0,
+      password:0,
+      role:0,
+      createdAt:0,
+      updatedAt:0,
+      __v:0
+    })
+    .populate({path: 'reviews', select: 'stars -_id'})
+    .then(user => {
+      if(!user){
+        res.status(404).json({
+          message: 'User not found',
+        });
+        return;
+      }
+
+      const response = {
+        _id: user._id,
+        name: user.name,
+        avg_rate: user.reviews.reduce((acc, post) => acc + parseInt(post.stars),0) / user.reviews.length,
+        image: user.userPhoto,
+        description: user.description,
+        services: user.services,
+        lastSeen: user.lastSeen,
+        location: {
+          lng: user.location.coordinates[0],
+          lat: user.location.coordinates[1]
+        },
+        phone: user.phone
+      };
+
+      res.status(200).json({
+        user: response
+      });
+      return;
+    })
+    .catch(err => res.status(500).json({
+      message: 'Error getting the specified user',
+      error: err
+    }));
+});
+
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .populate({path: 'reviews', populate: {path: 'fromUserId', model: 'User'}})
