@@ -179,6 +179,19 @@ router.get('/:id', (req, res, next) => {
     }));
 });
 
+router.put('/lastconnection/:id', (req, res, next) => {
+  User.findByIdAndUpdate(req.params.id, {
+    lastSeen: Date.now(),
+  }, {new:true})
+  .then(() => res.status(200).json({
+    message: 'User\'s last connection updated',
+  }))
+  .catch(err => res.status(500).json({
+    message: 'An error happened updating the user\'s last connection',
+    error: err
+  }));
+});
+
 router.put('/image/:id', uploadCloud.single('profileImage'), (req, res, next) => {
   let userPhoto = req.file.url;
   User.findByIdAndUpdate(req.params.id, {
@@ -195,7 +208,7 @@ router.put('/image/:id', uploadCloud.single('profileImage'), (req, res, next) =>
       message: 'An error happened when uploading the image',
       error: err
     }));
-})
+});
 
 router.put('/update/:id', uploadCloud.single('image'), (req, res, next) => {
   User.findById(req.params.id)

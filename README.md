@@ -53,6 +53,11 @@ Description: Updates the user's profile image and returns the updated user
 Required parameters: id
 Required fields: image
 
+Update last connection route: `/api/user/lastconnection/:id`
+Method: PUT
+Description: Updated the user's last connection to the current date (and time)
+Required parameters: id
+
 Update user route: `/api/user/update/:id`
 Method: PUT
 Description: Updates the user information
