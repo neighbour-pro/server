@@ -57,7 +57,7 @@ router.get('/:id', (req, res, next) => {
     }));
 });
 
-router.put('/:id/image', uploadCloud.single('profileImage'), (req, res, next) => {
+router.put('/image/:id', uploadCloud.single('profileImage'), (req, res, next) => {
   let userPhoto = req.file.url;
   User.findByIdAndUpdate(req.params.id, {
     userPhoto
@@ -75,7 +75,7 @@ router.put('/:id/image', uploadCloud.single('profileImage'), (req, res, next) =>
     }));
 })
 
-router.put('/:id/update', uploadCloud.single('image'), (req, res, next) => {
+router.put('/update/:id', uploadCloud.single('image'), (req, res, next) => {
   User.findById(req.params.id)
     .then(user => {
       const salt = bcrypt.genSaltSync(10);
@@ -135,7 +135,7 @@ router.put('/:id/update', uploadCloud.single('image'), (req, res, next) => {
     }));
 });
 
-router.delete('/:id/delete', (req, res, next) => {
+router.delete('/delete/:id', (req, res, next) => {
   User.deleteOne({_id: req.params.id})
     .then(user => {
       if(!user){
@@ -155,28 +155,6 @@ router.delete('/:id/delete', (req, res, next) => {
     }));
 });
 
-router.post('/:proId/:clientId/review', (req, res, next) => {
-  const {stars, comment} = req.body;
-  const review = new Review({
-    fromUserId: req.params.clientId,
-    stars,
-    comment
-  });
-  review.save()
-    .then(review => User.findByIdAndUpdate(req.params.proId, {
-      $push: {
-        reviews: review
-      }
-    }, {new: true}))
-    .then(user => res.status(200).json({
-      message: 'Review created successfully',
-      user
-    }))
-    .catch(err => res.status(500).json({
-      message: 'There was an error creating the review',
-      error: err
-    }));
 
-});
 
 module.exports = router;

@@ -37,12 +37,32 @@ Method: GET
 Description: Gets the user which id is the same passed by params
 Required parameters: id.
 
-Update user route: `/api/user/:id/update`
+Update user's profile image route: `/api/user/image/:id`
+Method: PUT
+Description: Updates the user's profile image and returns the updated user
+Required parameters: id
+Required fields: image
+
+Update user route: `/api/user/update/:id`
 Method: PUT
 Description: Updates the user information
 If the user is a client, the required fields are: `name, email, password, phone, role`
 If the user is a professional, the required fields are: `name, email, password, phone, description, services, role, location.coordinates.0, location.coordinates.1`
+Required parameters: id
 
-Delete user route: `/api/user/:id/delete`
+Delete user route: `/api/user/delete/:id`
 Method: DELETE
 Description: It Deletes the user
+Required parameters: id
+
+## Reviews
+Create review route: `/api/review/add/:proId/:clientId`
+Method: POST
+Description: Creates a new review from a client to a professional
+Required parameters: proId, clientId
+
+Add review images: `/api/review/images/:reviewId`
+Method: POST
+Description: Add images to a review
+Required parameters: reviewId
+Required fields: photos
