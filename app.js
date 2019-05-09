@@ -9,7 +9,10 @@ const path         = require('path');
 
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
-    
+
+require('./models/User');
+require('./models/Review');
+require('./models/Image');
 
 mongoose
   .connect(process.env.DB, {useNewUrlParser: true})

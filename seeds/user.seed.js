@@ -9,6 +9,8 @@ const bcryptSalt = 10;
 const testPassword = '1';
 faker.locale = 'es';
 const reviewsStarsOptions = ['1', '2', '3', '4', '5'];
+const clientsToCreate = 150;
+const professionalsToCreate = 80;
 
 function getRandomCoord(lat, lng, rad){
   var r = rad/111300 // meters
@@ -46,7 +48,7 @@ mongoose
 
 const password = bcrypt.hashSync(testPassword, bcrypt.genSaltSync(bcryptSalt));
 
-const clients = new Array(150).fill(0).map(user => {
+const clients = new Array(clientsToCreate).fill(0).map(clients => {
   let response = {
     name: faker.name.findName(),
     email: faker.internet.email(),
@@ -62,49 +64,48 @@ const clients = new Array(150).fill(0).map(user => {
   return response;
 });
 
-const professionals = new Array(80).fill(0).map(user => {
-  return User.countDocuments({role: 'Client'})
-  .then(total => Promise.resolve(new Array(getRandomIntMinMax(0, 25)).fill(total)))
-  .then(reviewsArray => reviewsArray.map(totalUsers => User.findOne().skip(Math.floor(Math.random() * totalUsers))
-  .then(user => new Review({
-      fromUserId: user._id,
-      stars: reviewsStarsOptions[Math.floor(Math.random()*reviewsStarsOptions.length)],
-      comment: faker.lorem.words(getRandomIntMinMax(15, 130))
-  }).save())))
-  .then(reviews => Promise.all(reviews))
-  .then(resolvedReviews => {
-    let {lat, lng} = getRandomCoord(40.504718, -3.697439, 20000);
-    let response = {
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      password,
-      lastSeen: Date.now(),
-      location: {
-        coordinates: [lng, lat]
-      },
-      reviews: [...resolvedReviews],
-      description: faker.lorem.words(getRandomIntMinMax(35, 50)),
-      services: faker.lorem.words(getRandomIntMinMax(100, 150)),
-      role: 'Professional',
-    };
-  
-    if(Math.random() > .2){
-      response.phone = faker.phone.phoneNumber('+34#########');
-    }
-  
-    return response;
-  })
-  .catch(err => console.error(err))
-});
-
 User.collection.drop()
 .then(() => User.create(clients))
 .then(clients => {
   console.log(`${clients.length} clients created`);
   return Promise.resolve();
 })
-.then(()=> Promise.all(professionals))
-.then(professionals => User.create(professionals))
+.then(()=>{
+  const professionals = new Array(professionalsToCreate).fill(0).map(professional => {
+    const reviews = new Array(getRandomIntMinMax(0, 25)).fill(0).map(review => {
+      return User.findOne({role: 'Client'}).skip(Math.floor(Math.random() * clientsToCreate))
+      .then(user => {
+        return Review.create({
+          fromUserId: user._id,
+          stars: reviewsStarsOptions[Math.floor(Math.random()*reviewsStarsOptions.length)],
+          comment: faker.lorem.words(getRandomIntMinMax(15, 130))
+        });
+      })
+      .catch(err => console.error(err));
+    });
+
+    return Promise.all(reviews)
+      .then(reviewArr => {
+        let {lat, lng} = getRandomCoord(40.504718, -3.697439, 20000);
+        professional = {
+          name: faker.name.findName(),
+          email: faker.internet.email(),
+          password,
+          lastSeen: Date.now(),
+          location: {
+            coordinates: [lng, lat]
+          },
+          reviews: reviewArr,
+          description: faker.lorem.words(getRandomIntMinMax(35, 50)),
+          services: faker.lorem.words(getRandomIntMinMax(100, 150)),
+          role: 'Professional',
+        };
+        return User.create(professional);
+      })
+      .catch(err => console.error(err));
+  });
+  return Promise.all(professionals);
+})
 .then((professionals)=> {
   console.log(`${professionals.length} professionals created`);
   return Promise.resolve();
