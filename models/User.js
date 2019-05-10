@@ -39,10 +39,7 @@ const userSchema = new Schema({
       required: true,
     },
   },
-  imageId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Image',
-  },
+  userPhoto: {type: String, default: "http://res.cloudinary.com/djvxspy9s/image/upload/v1557428753/neighbour-pro/default.jpg.jpg"},
   description: String,
   services: String,
   reviews: [{type: Schema.Types.ObjectId, ref: 'Review'}],

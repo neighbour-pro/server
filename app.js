@@ -47,5 +47,7 @@ const auth = require('./routes/auth');
 app.use('/api/auth', auth);
 const user = require('./routes/user');
 app.use('/api/user', user);
+const review = require('./routes/review');
+app.use('/api/review', review);
       
 module.exports = app;
