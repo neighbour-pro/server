@@ -3,18 +3,20 @@ const router = express.Router();
 const Conversation = require('../models/Conversation');
 const Message = require('../models/Message');
 
-router.get('/:id', (req, res, next) => {
-  Conversation.findOne({
+router.get('/:userId', (req, res, next) => {
+  Conversation.find({
     $or: [
       {
-        client_id: req.params.id
+        client_id: req.params.userId
       },
       {
-        professional_id: req.params.id
+        professional_id: req.params.userId
       }
     ]
   })
   .populate('messages')
+  .populate('client_id')
+  .populate('professional_id')
   .then(conversations => {
     res.status(200).json({
       conversations
@@ -40,13 +42,13 @@ router.post('/add/:fromId/:toId', (req, res, next) => {
   }));
 });
 
-router.post('/:id/addMessage', (req, res, next) => {
+router.post('/:conversationId/addMessage', (req, res, next) => {
   const message = new Message({
     text: req.body.text,
     user_id: req.body.userId
   });
   message.save()
-  .then(message => Conversation.findByIdAndUpdate(req.params.id, {
+  .then(message => Conversation.findByIdAndUpdate(req.params.conversationId, {
     $push: {
       messages: message
     }
