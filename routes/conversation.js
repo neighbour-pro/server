@@ -42,6 +42,19 @@ router.post('/add/:fromId/:toId', (req, res, next) => {
   }));
 });
 
+router.get('/:conversationId/messageList', (req, res, next) => {
+  Conversation.findById(req.params.conversationId)
+    .populate({path: 'messages', populate: {path: 'user_id', select: 'name'}})
+    .then(conversation => {
+      res.status(200).json({
+        conversation
+      });
+    })
+    .catch(err => res.status(500).json({
+      error: err
+    }));
+});
+
 router.post('/:conversationId/addMessage', (req, res, next) => {
   const message = new Message({
     text: req.body.text,
