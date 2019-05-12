@@ -54,5 +54,7 @@ const user = require('./routes/user');
 app.use('/api/user', user);
 const review = require('./routes/review');
 app.use('/api/review', review);
+const conversation = require('./routes/conversation');
+app.use('/api/conversation', conversation);
       
 module.exports = app;
