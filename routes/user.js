@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Image = require('../models/Image');
 const Review = require('../models/Review');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const uploadCloud = require('../config/cloudinary.js');
 
 router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
