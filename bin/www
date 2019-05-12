@@ -26,6 +26,8 @@ app.use((err, req, res, next) => {
 });
 
 let server = http.createServer(app);
+const io = require('socket.io')(server);
+app.set('socketio', io);
 
 server.on('error', error => {
   if (error.syscall !== 'listen') { throw error }
