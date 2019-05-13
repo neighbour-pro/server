@@ -42,23 +42,7 @@ router.post('/add/:fromId/:toId', (req, res, next) => {
   }));
 });
 
-router.get('/:conversationId/messageList', (req, res, next) => {
-  const socket_id = [];
-  const io = req.app.get('socketio');
-  io.on('connection', socket => {
-    console.log('Hello')
-    socket_id.push(socket.id);
-    if(socket_id[0] === socket.id){
-      io.removeAllListeners('connection');
-    }
-    socket.on('hello message', msg => {
-      console.log('just got: '+ msg);
-      socket.emit('chat message', 'hi from server');
-    });
-  });
-  
-  
-  
+router.get('/:conversationId/messageList', (req, res, next) => {  
   Conversation.findById(req.params.conversationId)
     .populate({path: 'messages', populate: {path: 'user_id', select: 'name'}})
     .then(conversation => {
