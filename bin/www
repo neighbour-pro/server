@@ -29,7 +29,11 @@ let server = http.createServer(app);
 const io = require('socket.io')(server);
 io.on('connection', function(socket){
   socket.on('message', function(data){
-    console.log(data);
+    // io.emit('msg', data);
+    io.to(data.conversation_id).emit('msg', data);
+  });
+  socket.on('join', function(room) {
+    socket.join(room);
   });
 });
 
