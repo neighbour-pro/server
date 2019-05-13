@@ -6,11 +6,7 @@ const paymentSchema = new Schema({
     ref: 'User'
   },
   quota: Number,
-  status: {
-    type: String,
-    enum: [],
-    default: ''
-  },
+  status: String,
   limitDay: Date,
   invoice: String
 });

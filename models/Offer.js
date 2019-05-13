@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const offerSchema = new Schema({
+  client_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  professional_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   status: {
     type: String,
-    enum: [],
-    default: '',
+    enum: ['Pending', 'Rejected', 'Acepted'],
+    default: 'Pending',
     required: true
   },
   description: String,

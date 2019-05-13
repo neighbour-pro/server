@@ -56,5 +56,7 @@ const review = require('./routes/review');
 app.use('/api/review', review);
 const conversation = require('./routes/conversation');
 app.use('/api/conversation', conversation);
+const offer = require('./routes/offer');
+app.use('/api/offer', offer);
       
 module.exports = app;
