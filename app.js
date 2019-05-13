@@ -9,6 +9,7 @@ const path         = require('path');
 
 const session    = require("express-session");
 const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 
 require('./models/User');
 require('./models/Review');
@@ -32,7 +33,11 @@ const app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());      
+app.use(cookieParser());
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:3000', 'http://neighbour-pro.herokuapp.com']
+}));
 
 // Enable authentication using session + passport
 app.use(session({
@@ -49,5 +54,7 @@ const user = require('./routes/user');
 app.use('/api/user', user);
 const review = require('./routes/review');
 app.use('/api/review', review);
+const conversation = require('./routes/conversation');
+app.use('/api/conversation', conversation);
       
 module.exports = app;

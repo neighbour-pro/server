@@ -3,7 +3,7 @@ const passport = require('passport');
 const router = express.Router();
 const User = require('../models/User');
 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const bcryptSalt = 10;
 
 router.post('/login', (req, res, next) => {
@@ -100,10 +100,20 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.get("/logout", (req, res) => {
+router.get("/logged", (req, res) => {
+  if(req.isAuthenticated()){
+    res.status(200).json(req.user);
+    return;
+  }
+  res.status(403).json({
+    message: 'Not logged'
+  });
+});
+
+router.post("/logout", (req, res) => {
   req.logout();
-  res.json({
-    logout: true
+  res.status(200).json({
+    message: 'Logged out'
   });
 });
 
