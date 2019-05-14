@@ -7,7 +7,52 @@ const Offer = require('../models/Offer');
 const Payment = require('../models/Payment');
 
 // Create offers
-// Update offer state (and details)
+router.post('/new', (req, res, next) => {
+  const payment = new Payment({
+    client_id: req.body.clientId,
+    quota: +req.body.price,
+    status: 'Pending',
+    limitDay: new Date(req.body.limitDay),
+    invoice: ''
+  });
+  payment.save()
+    .then(payment => {
+      return Offer.create({
+        client_id: req.body.clientId,
+        professional_id: req.body.professionalId,
+        status: 'Pending',
+        description: req.body.description,
+        price: +req.body.price,
+        date: new Date(req.body.limitDay),
+        payment_id: payment
+      });
+    })
+    .then(offer => res.status(200).json({
+      message: 'Created new offer',
+      offer: offer
+    }))
+    .catch(err => res.status(500).json({
+      error:err
+    }));
+});
+
+// Update offer details
+// router.put('/edit/:offerId', (req, res, next) => {
+//   Offer.findByIdAndUpdate(req.params.id, {
+//     description: req.body.description,
+//     price: +req.body.price,
+//     date: new Date(req.body.limitDay)  
+//   }, {new: true})
+//   .then(offer => {
+//     return Payment.findByIdAndUpdate(offer.payment_id._id, {
+//       quota: +req.body.price,
+//       limitDay: new Date(req.body.limitDay)
+//     }, {new: true})
+//   })
+//   .then(payment => res.status(200).json(payment))
+//   .catch(err => res.status(500).json({error:err}));
+// });
+
 // Get offers from a professional to a user
 // Get user (pending, rejected, acepted) offers
 // Get specific payment
