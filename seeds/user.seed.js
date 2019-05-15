@@ -64,9 +64,10 @@ const clients = new Array(clientsToCreate).fill(0).map(clients => {
   return response;
 });
 
-User.collection.drop()
-.then(() => Review.collection.drop())
-.then(() => User.create(clients))
+// User.collection.drop()
+// .then(() => Review.collection.drop())
+// .then(() => User.create(clients))
+User.create(clients)
 .then(clients => {
   console.log(`${clients.length} clients created`);
   return Promise.resolve();
