@@ -35,7 +35,7 @@ const userSchema = new Schema({
     },
     coordinates: {
       type: [Number],
-      default: [-129.354104, -18.551005],
+      default: [-3.6982669, 40.3925321],
       required: true,
     },
   },

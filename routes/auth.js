@@ -40,7 +40,7 @@ router.post("/signup", (req, res, next) => {
   const {name, email, password, confirmPassword, role} = req.body;
   let salt, hashPass;
 
-  if(email.trim().length === 0 
+  if(!name || !email || !password || !confirmPassword || !role ||email.trim().length === 0 
   || password.length === 0 
   || name.trim().length === 0 
   || confirmPassword.length === 0 

@@ -9,8 +9,8 @@ const bcryptSalt = 10;
 const testPassword = '1';
 faker.locale = 'es';
 const reviewsStarsOptions = ['1', '2', '3', '4', '5'];
-const clientsToCreate = 150;
-const professionalsToCreate = 80;
+const clientsToCreate = 30;
+const professionalsToCreate = 30;
 
 function getRandomCoord(lat, lng, rad){
   var r = rad/111300 // meters
@@ -87,7 +87,7 @@ User.collection.drop()
 
     return Promise.all(reviews)
       .then(reviewArr => {
-        let {lat, lng} = getRandomCoord(40.504718, -3.697439, 20000);
+        let {lat, lng} = getRandomCoord(40.3925321, -3.6982669, 20000);
         professional = {
           name: faker.name.findName(),
           email: faker.internet.email(),
