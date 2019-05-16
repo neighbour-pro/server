@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:3000', 'http://neighbour-pro.herokuapp.com']
+  origin: ['http://localhost:3000', 'https://neighbour-pro.herokuapp.com', 'http://localhost:8081']
 }));
 
 // Enable authentication using session + passport
