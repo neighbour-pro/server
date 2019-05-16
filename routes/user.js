@@ -210,20 +210,21 @@ router.put('/image/:id', uploadCloud.single('profileImage'), (req, res, next) =>
     }));
 });
 
-router.put('/update/:id', uploadCloud.single('image'), (req, res, next) => {
+router.put('/update/:id', (req, res, next) => {
   User.findById(req.params.id)
     .then(user => {
-      const salt = bcrypt.genSaltSync(10);
-      const hashPass = bcrypt.hashSync(req.body.password, salt);
+      // const salt = bcrypt.genSaltSync(10);
+      // const hashPass = bcrypt.hashSync(req.body.password, salt);
       switch(user.role){
         case 'Client':
-          User.findByIdAndUpdate(user.id, {
+          User.findByIdAndUpdate(user._id, {
             name: req.body.name,
             email: req.body.email,
-            password: hashPass,
+            // password: hashPass,
             lastSeen: Date.now(),
             phone: req.body.phone,
-            role: req.body.role,
+            // role: req.body.role,
+            description: req.body.description
           }, {new: true})
           .then(user => {
             res.status(200).json({
