@@ -30,9 +30,11 @@ const io = require('socket.io')(server);
 io.on('connection', function(socket){
   socket.on('message', function(data){
     // io.emit('msg', data);
+    console.log('Message'+data)
     io.to(data.conversation_id).emit('msg', data);
   });
   socket.on('join', function(room) {
+    console.log('Joined', room)
     socket.join(room);
   });
 });
