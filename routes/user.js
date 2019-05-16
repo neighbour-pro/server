@@ -217,15 +217,18 @@ router.put('/update/:id', (req, res, next) => {
       // const hashPass = bcrypt.hashSync(req.body.password, salt);
       switch(user.role){
         case 'Client':
-          User.findByIdAndUpdate(user._id, {
-            name: req.body.name,
-            email: req.body.email,
-            // password: hashPass,
-            lastSeen: Date.now(),
-            phone: req.body.phone,
-            // role: req.body.role,
-            description: req.body.description
-          }, {new: true})
+        const clientToUpdate = {
+          name: req.body.name,
+          email: req.body.email,
+          // password: hashPass,
+          lastSeen: Date.now(),
+          // role: req.body.role,
+          description: req.body.description
+        }
+        if(req.body.phone !== ''){
+          clientToUpdate.phone = req.body.phone;
+        }
+          User.findByIdAndUpdate(user._id, clientToUpdate, {new: true})
           .then(user => {
             res.status(200).json({
               message: 'User updated sucessfully',
@@ -239,18 +242,21 @@ router.put('/update/:id', (req, res, next) => {
           }));
         break;
         case 'Professional':
-          User.findByIdAndUpdate(user.id, {
+          const professionalToUpdate = {
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password,
+            // password: req.body.password,
             lastSeen: Date.now(),
-            phone: req.body.phone,
             description: req.body.description,
             services: req.body.services,
-            role: req.body.role,
-            "location.coordinates.0": +req.body.lng,
-            "location.coordinates.1": +req.body.lat
-          }, {new: true})
+            // role: req.body.role,
+            // "location.coordinates.0": +req.body.lng,
+            // "location.coordinates.1": +req.body.lat
+          }
+          if(req.body.phone !== ''){
+            professionalToUpdate.phone = req.body.phone;
+          }
+          User.findByIdAndUpdate(user.id, professionalToUpdate, {new: true})
           .then(user => {
             res.status(200).json({
               message: 'User updated sucessfully',
