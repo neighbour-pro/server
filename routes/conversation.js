@@ -28,6 +28,27 @@ router.get('/:userId', (req, res, next) => {
   }));
 });
 
+router.get('/between/:clientId/:professionalId', (req, res, next) => {
+  Conversation.findOne({
+    $and: [
+      {client_id: req.params.clientId},
+      {professional_id: req.params.professionalId}
+    ]
+  })
+  .populate('messages')
+  .then(conversation => {
+    if(!conversation){
+      res.status(404).json({
+        message: 'Conversation not found'
+      });
+      return;
+    }
+    res.status(200).json({
+      conversation
+    });
+  })
+});
+
 router.post('/add/:fromId/:toId', (req, res, next) => {
   Conversation.create({
     client_id: req.params.fromId,
@@ -69,6 +90,8 @@ router.post('/:conversationId/addMessage', (req, res, next) => {
   .then(conversation => res.status(200).json(conversation))
   .catch(err => res.status(500).json({error: err}));
 });
+
+
 
 
 
