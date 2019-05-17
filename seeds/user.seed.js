@@ -74,13 +74,13 @@ User.create(clients)
 })
 .then(()=>{
   const professionals = new Array(professionalsToCreate).fill(0).map(professional => {
-    const reviews = new Array(getRandomIntMinMax(0, 25)).fill(0).map(review => {
+    const reviews = new Array(getRandomIntMinMax(1, 25)).fill(0).map(review => {
       return User.findOne({role: 'Client'}).skip(Math.floor(Math.random() * clientsToCreate))
       .then(user => {
         return Review.create({
           fromUserId: user._id,
           stars: reviewsStarsOptions[Math.floor(Math.random()*reviewsStarsOptions.length)],
-          comment: faker.lorem.words(getRandomIntMinMax(15, 130))
+          comment: faker.lorem.words(getRandomIntMinMax(15, 80))
         });
       })
       .catch(err => console.error(err));
@@ -99,7 +99,7 @@ User.create(clients)
           },
           reviews: reviewArr,
           description: faker.lorem.words(getRandomIntMinMax(35, 50)),
-          services: faker.lorem.words(getRandomIntMinMax(100, 150)),
+          services: faker.lorem.words(getRandomIntMinMax(25, 40)),
           role: 'Professional',
         };
         return User.create(professional);
