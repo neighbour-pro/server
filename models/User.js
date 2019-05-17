@@ -52,5 +52,8 @@ const userSchema = new Schema({
 });
 
 userSchema.index({location:'2dsphere'});
+userSchema.index({name: 'text'});
+userSchema.index({description: 'text'});
+userSchema.index({services: 'text'});
 
 module.exports = mongoose.model('User', userSchema);

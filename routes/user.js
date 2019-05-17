@@ -6,10 +6,11 @@ const Review = require('../models/Review');
 const bcrypt = require('bcryptjs');
 const uploadCloud = require('../config/cloudinary.js');
 
-router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
+router.get('/nearme/:longitude/:latitude/:radius?/:search?', (req, res, next) => {
   let radius = +req.params.radius;
   let lng = +req.params.longitude;
   let lat = +req.params.latitude;
+  const query = req.params.search ? req.params.search : '';
   if(isNaN(radius)) radius = 100000; // 100km
   User.find({
     role:'Professional',
@@ -21,7 +22,24 @@ router.get('/nearme/:longitude/:latitude/:radius?', (req, res, next) => {
           coordinates: [lng, lat],
         },
       }
-    }
+    },
+    $or: [
+      {
+        name: {
+          $regex: new RegExp(query, 'im')
+        }
+      },
+      {
+        description: {
+          $regex: new RegExp(query, 'im')
+        }
+      },
+      {
+        services: {
+          $regex: new RegExp(query, 'im')
+        }
+      },
+    ]
   })
   .select({
     email:0,
